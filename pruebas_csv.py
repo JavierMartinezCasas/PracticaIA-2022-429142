@@ -4,16 +4,10 @@ import pandas as pd
 # Los estados posibles (se pueden representar de 0 a 7)
 states = ['HHH', 'HHL', 'HLH', 'LHH', 'LLH', 'LHL', 'HLL', 'LLL']
 
-# contadorHHH_HHH = 0  Se usaria para contar las veces que HHH pasa a HHH (para probabilidades)
-# contadorHHH_HHL = 0
-
-matrizN = [[]]
 matrizE = [[]]
 matrizW = [[]]
 
 file = open('Data.csv')
-type(file)
-
 csvreader = csv.reader(file)
 
 rows = []
@@ -25,11 +19,23 @@ columns = ['Initial traffic level N', 'Initial traffic level E', 'Initial traffi
 
 df = pd.read_csv('Data.csv', sep=";", usecols=columns)
 
+# Hacer funciones para cada acción para reducir el número de variables que declarar
+
 # Hay que coger toda la fila, contar las veces que aparece, y dividarla entre el número total de filas [len(rows)]
 
-# for i in range(len(rows)):
+total1 = 0
+total2 = 0
+total3 = 0
+total4 = 0
+total5 = 0
+total6 = 0
+total7 = 0
 
-for i in range(len(rows)):
+parcialN1 = 0
+
+matParcial = [[]]
+
+for i in range(8785):
     action = df['Green traffic light']
     _action = action[i]
 
@@ -69,7 +75,7 @@ for i in range(len(rows)):
     else:
         _finalW = 0
 
-    initial = str(_initialN) + str(_initialE) + str(_initialW) # Número en binario
+    initial = str(_initialN) + str(_initialE) + str(_initialW)  # Número en binario
     final = str(_finalN) + str(_finalE) + str(_finalW)
 
     _initial = int(initial, 2)
@@ -85,34 +91,24 @@ for i in range(len(rows)):
     Fijar primero la acción, luego el estado incial de los semáforos (contamos el total)
     y finalmente el estado final (dónde contamos las ocurrencias)
     """
-    totalLLL = 0
-    totalLLH = 0
+
+    # Solo 2 contadores (total y parcial), se reinician cada vez que el array vuelve
+    # y sus valores se meten directamente en la matriz con la probabilidad??
+
+    # Hacer una matriz a parte solo con los valores parciales y una lista con los totales
 
     # Obtener los datos para la acción N y añadir para la matrizN las probs. de la misma [columnas[filas]]
     if action[i] == "N":  # Fijamos la acción
-        if int(initial) == 0:  # Fijamos el estado inicial con LLL (000)
+        if _initial == 1:  # Fijamos el estado inicial con LLH (001 == 1)
+            total1 += 1
+            for j in range(8785):  # Recorremos los datos para buscar los que el estado inicial sea LLL (000)
+                if _final == 1:
+                    #matParcial[0][0] += 1
+                    parcialN1 += 1
 
-            totalLLL += 1
-            for j in range(len(rows)):  # Recorremos los datos para buscar los que el estado inicial sea LLL (000)
-                if int(final) == 0:
-                    print("Hey")
+        if int(_initial) == 2:
+            total2 += 1
 
-        if int(initial) == 1:
-            totalLLH += 1
-
-
-
-
-        """
-        if int(initial) == 111:
-            initialHHH.append(i)
-        
-        if int(initial) == 110:
-            initialHHH.append(i)
-        
-        if int(final) == 110:
-            final.append(i)
-        """
     """
     elif action[i] == "E":
         print()
@@ -120,6 +116,13 @@ for i in range(len(rows)):
     elif action[i] == "W":
         print()
     """
-
+print(total1)
+print(total2)
+print(matParcial[0])
 
 file.close()
+
+
+def countN():
+    matrizN = [[]]
+    print(initial)
