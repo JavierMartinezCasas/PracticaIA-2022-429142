@@ -4,6 +4,7 @@ import pandas as pd
 # Constantes
 NUM_ESTADOS = 8
 NUM_ACCIONES = 3
+COSTE = 1
 
 
 def obtenerProbabilidades():
@@ -22,15 +23,16 @@ def obtenerProbabilidades():
 
     df = pd.read_csv('Data.csv', sep=";", usecols=columns)
 
-    for i in range(8785):
+    for i in range(8785):   # Parra recorrer todas las filas del fichero de datos
         action = df['Green traffic light']
         if action[i] == 'N':  # Comprueba que semáforo está encendiendo
-            ac = 1  # Le asigna un valor
+            ac = 0  # Le asigna un valor (del 0 al 2)
         if action[i] == 'E':
+            ac = 1
+        if action[i] == 'W':
             ac = 2
-        if action[3] == 'W':
-            ac = 3
 
+        # ----------------Asignación de valores binarios a los estados-------------------------------
         initialN = df['Initial traffic level N']
         if initialN[i] == 'High':
             _initialN = 1  # H
@@ -89,4 +91,21 @@ def obtenerProbabilidades():
     return probabilidad
 
 
-print(obtenerProbabilidades())
+def calcularCostes():
+    costes = [0 for ac in range(NUM_ACCIONES)]
+
+    return costes
+
+def obtenerValoresEsperados(costes):
+    valores = [0 for eo in range(NUM_ESTADOS)]
+
+    return valores
+
+
+probabilidad = obtenerProbabilidades()  # Obtener las probabilidades para las ecuaciones
+costes = calcularCostes()
+valores = obtenerValoresEsperados(costes)
+
+print(probabilidad)
+print(costes)
+print(valores)
