@@ -122,27 +122,6 @@ def obtenerValoresEsperados(costes, probabilidad):
                 valor = cost + probabilidad[ac][eo][ed] * valores[ed]
                 valores[ed] = valor
 
-    """
-    # Plantear las ecuaciones de Bellman
-    for ac in range(probabilidad):  #Recorremos para los 3 diferentes estados
-        if ac == 0:
-            cost = verdeN   # Asignamos el coste de la tupla costes
-        for eo in range(probabilidad):
-            for ed in range(probabilidad):
-                print(probabilidad[ac][eo][ed])
-
-        if ac == 1:
-            cost = verdeE
-        for eo in range(probabilidad):
-            for ed in range(probabilidad):
-                print(probabilidad[ac][eo][ed])
-
-        if ac == 2:
-            cost = verdeW
-        for eo in range(probabilidad):
-            for ed in range(probabilidad):
-                print(probabilidad[ac][eo][ed])
-    """
     return valores
 
 
