@@ -103,24 +103,44 @@ def calcularCostes():
 # Esta función itera sobre las ecuaciones de Bellman un número determinado de veces y devuelve una tabla con los valores
 def obtenerValoresEsperados(costes, probabilidad):
     valores = [0 for eo in range(NUM_ESTADOS)]
+    valores_aux = [0 for eo in range(NUM_ESTADOS)]
     verdeN = costes[0]
     verdeE = costes[1]
     verdeW = costes[2]
 
+    valorN = [0 for i in range(NUM_ESTADOS)]   # Tablas específicas para cada acción
+    valorE = [0 for j in range(NUM_ESTADOS)]
+    valorW = [0 for k in range(NUM_ESTADOS)]
+
+    print(valorN)
+
+    # Meter aquí un while para que itere solo 5000 veces
     for ac in range(len(probabilidad)):  # ac es 0, 1 o 2 para cada acción
         if ac == 0:
             cost = verdeN
-        elif ac == 1:
-            cost = verdeE
-        elif ac == 2:
-            cost = verdeW
+            for eo in range(len(probabilidad[ac])):
+                for ed in range(len(probabilidad[ac][eo])):  # Cada elemento de aquí es un probabilidad[ac][eo][ed]
+                    print(valorN[ed])
+                    valor = cost + float(probabilidad[ac][eo][ed]) * valorN[ed]
+                    valorN = valor
 
-        for eo in range(len(probabilidad[ac])):
-            # print(eo)
-            for ed in range(len(probabilidad[ac][eo])):  # Cada elemento de aquí es un probabilidad[ac][eo][ed]
-                # print(ed)
-                valor = cost + probabilidad[ac][eo][ed] * valores[ed]
-                valores[ed] = valor
+        if ac == 1:
+            cost = verdeE
+            for eo in range(len(probabilidad[ac])):
+                for ed in range(len(probabilidad[ac][eo])):  # Cada elemento de aquí es un probabilidad[ac][eo][ed]
+                    valor = cost + probabilidad[ac][eo][ed] #* valorE[ed]
+                    valorE = valor
+
+        if ac == 2:
+            cost = verdeW
+            for eo in range(len(probabilidad[ac])):
+                for ed in range(len(probabilidad[ac][eo])):  # Cada elemento de aquí es un probabilidad[ac][eo][ed]
+                    valor = cost + probabilidad[ac][eo][ed] #* valorW[ed]
+                    valorW = valor
+
+    for i in range(len(valores)):
+        print(valorN)
+        # valores[i] = min(valorN[i], valorE[i], valorW[i])
 
     return valores
 
@@ -129,4 +149,4 @@ probabilidad = obtenerProbabilidades()  # Obtener las probabilidades para las ec
 costes = calcularCostes()
 valores = obtenerValoresEsperados(costes, probabilidad)
 
-print(valores)
+# print(valores)
