@@ -19,9 +19,6 @@ columns = ['Initial traffic level N', 'Initial traffic level E', 'Initial traffi
 
 df = pd.read_csv('Data.csv', sep=";", usecols=columns)
 
-# Hacer funciones para cada acción para reducir el número de variables que declarar
-
-# Hay que coger toda la fila, contar las veces que aparece, y dividarla entre el número total de filas [len(rows)]
 
 total1 = 0
 total2 = 0
@@ -34,6 +31,9 @@ total7 = 0
 parcialN1 = 0
 
 matParcial = [[]]
+matParcial[0].append(0)
+
+matN = [[]]
 
 for i in range(8785):
     action = df['Green traffic light']
@@ -99,15 +99,17 @@ for i in range(8785):
 
     # Obtener los datos para la acción N y añadir para la matrizN las probs. de la misma [columnas[filas]]
     if action[i] == "N":  # Fijamos la acción
-        if _initial == 1:  # Fijamos el estado inicial con LLH (001 == 1)
-            total1 += 1
-            for j in range(8785):  # Recorremos los datos para buscar los que el estado inicial sea LLL (000)
+        matN.append(_initial)  # Guarda en la matriz los estados que tengan la N como accion
+        for j in range(len(matN)):  # Recorremos la matriz de los estados con la N como accion
+            if _initial == 1:  # Fijamos el estado inicial con LLH (001 == 1)
+                total1 += 1
+                # for j in range(8785):  # Recorremos los datos para buscar los que el estado inicial sea LLH (001 == 1)
                 if _final == 1:
-                    #matParcial[0][0] += 1
+                    matParcial[0][0] += 1
                     parcialN1 += 1
 
-        if int(_initial) == 2:
-            total2 += 1
+            if int(_initial) == 2:
+                total2 += 1
 
     """
     elif action[i] == "E":
@@ -118,7 +120,9 @@ for i in range(8785):
     """
 print(total1)
 print(total2)
+print(parcialN1)
 print(matParcial[0])
+print(matN)
 
 file.close()
 

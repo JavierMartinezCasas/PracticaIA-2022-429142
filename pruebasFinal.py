@@ -1,7 +1,7 @@
 import csv
 import pandas as pd
 
-# Constantes
+# ----------------------Definición de constantes---------------------------------
 NUM_ESTADOS = 8
 NUM_ACCIONES = 3
 COSTE = 1
@@ -21,13 +21,14 @@ def obtenerProbabilidades():
         rows.append(row)
 
     columns = ['Initial traffic level N', 'Initial traffic level E', 'Initial traffic level W', 'Green traffic light',
-               'Final traffic level N', 'Final traffic level E', 'Final traffic level W']
+               'Final traffic level N', 'Final traffic level E', 'Final traffic level W']   # Columnas a obtener
 
     df = pd.read_csv('Data.csv', sep=";", usecols=columns)
 
+    # -------------------Asignación de valores decimales a las acciones -----------------------------
     for i in range(8785):  # Parra recorrer todas las filas del fichero de datos
         action = df['Green traffic light']
-        if action[i] == 'N':  # Comprueba que semáforo está encendiendo
+        if action[i] == 'N':  # Comprueba qué semáforo está encendiendo
             ac = 0  # Le asigna un valor (del 0 al 2)
         if action[i] == 'E':
             ac = 1
@@ -71,6 +72,7 @@ def obtenerProbabilidades():
         else:
             _finalW = 0
 
+        # ----------------Unión de valores para los estados------------------
         initial = str(_initialN) + str(_initialE) + str(_initialW)  # Número en binario del estado origen
         final = str(_finalN) + str(_finalE) + str(_finalW)  # Número en binario del estado destino
 
@@ -80,6 +82,7 @@ def obtenerProbabilidades():
         ocurrencias[ac][eo][ed] = ocurrencias[ac][eo][
                                       ed] + 1  # Actualizar la matriz ocurrencias con las ocurrencias de cada linea
 
+    # -------------------Obtención de la matriz de probabilidades-----------------------
     for ac in range(NUM_ACCIONES):
         for eo in range(NUM_ESTADOS):
             total = 0
@@ -91,12 +94,12 @@ def obtenerProbabilidades():
                 else:
                     probabilidad[ac][eo][ed] = ocurrencias[ac][eo][ed] / total
 
-    return probabilidad
+    return probabilidad # Devuelve la matriz de probabilidades
 
 
-# Esta funbción genera una tupla con los costes correspondientes para cada acción
+# -------------------------Introducción de los costes para cada acción----------------------------
 def calcularCostes():
-    costes = [COSTE for ac in range(NUM_ACCIONES)]
+    costes = [COSTE for ac in range(NUM_ACCIONES)]  # Introduce la variable COSTE en la tupla de costes
     return costes
 
 
@@ -112,35 +115,33 @@ def obtenerValoresEsperados(costes, probabilidad):
     valorE = [0 for j in range(NUM_ESTADOS)]
     valorW = [0 for k in range(NUM_ESTADOS)]
 
-    print(valorN)
-
     # Meter aquí un while para que itere solo 5000 veces
     for ac in range(len(probabilidad)):  # ac es 0, 1 o 2 para cada acción
         if ac == 0:
             cost = verdeN
             for eo in range(len(probabilidad[ac])):
                 for ed in range(len(probabilidad[ac][eo])):  # Cada elemento de aquí es un probabilidad[ac][eo][ed]
-                    print(valorN[ed])
-                    valor = cost + float(probabilidad[ac][eo][ed]) * valorN[ed]
-                    valorN = valor
+                    #print(valorN[ed])
+                    valor = cost + probabilidad[ac][eo][ed] * valorN[ed]
+                    print(valor)
+                    valorN[ed] = valor
 
         if ac == 1:
             cost = verdeE
             for eo in range(len(probabilidad[ac])):
                 for ed in range(len(probabilidad[ac][eo])):  # Cada elemento de aquí es un probabilidad[ac][eo][ed]
-                    valor = cost + probabilidad[ac][eo][ed] #* valorE[ed]
-                    valorE = valor
+                    valor = cost + probabilidad[ac][eo][ed] * valorE[ed]
+                    valorE[ed] = valor
 
         if ac == 2:
             cost = verdeW
             for eo in range(len(probabilidad[ac])):
                 for ed in range(len(probabilidad[ac][eo])):  # Cada elemento de aquí es un probabilidad[ac][eo][ed]
-                    valor = cost + probabilidad[ac][eo][ed] #* valorW[ed]
-                    valorW = valor
+                    valor = cost + probabilidad[ac][eo][ed] * valorW[ed]
+                    valorW[ed] = valor
 
     for i in range(len(valores)):
-        print(valorN)
-        # valores[i] = min(valorN[i], valorE[i], valorW[i])
+        valores[i] = min(valorN[i], valorE[i], valorW[i])
 
     return valores
 
@@ -149,4 +150,5 @@ probabilidad = obtenerProbabilidades()  # Obtener las probabilidades para las ec
 costes = calcularCostes()
 valores = obtenerValoresEsperados(costes, probabilidad)
 
-# print(valores)
+print(valores)
+print(probabilidad)
