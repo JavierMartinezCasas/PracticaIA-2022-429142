@@ -7,7 +7,7 @@ NUM_ACCIONES = 3
 COSTE = 1
 ESTADO_OBJETIVO = 0
 LIMITE_CICLOS = 5000
-EPSILON = 0.001
+EPSILON = 0.001     # Umbral para la diferencia entre los valores esperados en ciclos consecutivos
 NOMBRE_FICHERO = 'Data.csv'
 
 
@@ -119,13 +119,13 @@ def obtenerValoresEsperados(costes, probabilidad):
                     for ed in range(NUM_ESTADOS):
                         p = probabilidad[ac][eo][ed]
                         v = VO[ed]
-                        sumatorio = sumatorio + p * v   # Calcula el valor siguiente teniendo en cuenta el anterior
+                        sumatorio += p * v   # Calcula el valor siguiente teniendo en cuenta el anterior
                     valorAccion = costes[ac] + sumatorio
 
-                    if valorAccion < minVal:
-                        minVal = valorAccion
+                if valorAccion < minVal:
+                    minVal = valorAccion
 
-            VF[eo] = minVal
+                VF[eo] = minVal
 
             dif = abs(VF[eo] - VO[eo])
             if dif > difMax:
