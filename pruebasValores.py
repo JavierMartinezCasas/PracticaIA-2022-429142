@@ -1,4 +1,3 @@
-import csv
 import pandas as pd
 
 # ----------------------Definición de constantes---------------------------------
