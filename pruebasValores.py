@@ -7,7 +7,7 @@ NUM_ACCIONES = 3
 COSTE = 1
 ESTADO_OBJETIVO = 0
 LIMITE_CICLOS = 5000
-EPSILON = 0.001     # Umbral para la diferencia entre los valores esperados en ciclos consecutivos
+EPSILON = 0.001  # Umbral para la diferencia entre los valores esperados en ciclos consecutivos
 NOMBRE_FICHERO = 'Data.csv'
 
 
@@ -74,7 +74,8 @@ def obtenerProbabilidades():
         eo = int(initial, 2)  # Número en decimal del estado origen
         ed = int(final, 2)  # Número en decimal del estado destino
 
-        ocurrencias[ac][eo][ed] = ocurrencias[ac][eo][ed] + 1  # Actualizar la matriz ocurrencias con las ocurrencias de cada linea
+        ocurrencias[ac][eo][ed] = ocurrencias[ac][eo][
+                                      ed] + 1  # Actualizar la matriz ocurrencias con las ocurrencias de cada linea
 
     # -------------------Obtención de la matriz de probabilidades-----------------------
     for ac in range(NUM_ACCIONES):
@@ -99,42 +100,43 @@ def calcularCostes():
 
 # ---------------------Cálculo de las iteraciones sobre las ecuaciones de Bellman-------------------
 def obtenerValoresEsperados(costes, probabilidad):
-    VO = [0 for eo in range(NUM_ESTADOS)]   # Lista de valores iniciales (eo)
-    VF = [0 for eo in range(NUM_ESTADOS)]   # Lista de valores siguientes (ed)
+    VO = [0 for eo in range(NUM_ESTADOS)]  # Lista de valores iniciales (eo)
+    VF = [0 for eo in range(NUM_ESTADOS)]  # Lista de valores siguientes (ed)
     sumatorio = 0
-    minVal = 10
-    difMax = 0
+    minVal = 10000
+    difMax = 1000
     ciclo = 0
     fin = False
 
-    while ciclo < LIMITE_CICLOS:    # Iteramos sobre las ecuaciones un número determinado de veces
-        if fin:     # Si se cumple la condición de parada sale del bucle y termina el programa
+    while ciclo < LIMITE_CICLOS:  # Iteramos sobre las ecuaciones un número determinado de veces
+        if fin:  # Si se cumple la condición de parada sale del bucle y termina el programa
             break
 
-        for ac in range(NUM_ACCIONES):  # Recorremos bucles para la matriz de probabilidad
-            for eo in range(NUM_ESTADOS):
-                if eo == 0:     # Eliminamos el estado absorbente de los cálculos
-                    continue    # Pasa al siguiente estado origen
+        for eo in range(NUM_ESTADOS):
+            for ac in range(NUM_ACCIONES):  # Recorremos bucles para la matriz de probabilidad
+                sumatorio = 0
+                if eo == 0:  # Eliminamos el estado absorbente de los cálculos (None?)
+                    continue  # Pasa al siguiente estado origen (eo)
                 else:
                     for ed in range(NUM_ESTADOS):
                         p = probabilidad[ac][eo][ed]
-                        v = VO[ed]
-                        sumatorio += p * v   # Calcula el valor siguiente teniendo en cuenta el anterior
-                    valorAccion = costes[ac] + sumatorio
+                        v = VO[ed]  #PROBLEMA
+                        sumatorio += p * v  # Suma las probabilidades por los valores
+                    valorAccion = costes[ac] + sumatorio  # Suma el coste de cada acción a sumatorio
 
-                if valorAccion < minVal:
-                    minVal = valorAccion
-
+            if valorAccion < minVal:
+                print("Hola")
+                minVal = valorAccion
                 VF[eo] = minVal
 
             dif = abs(VF[eo] - VO[eo])
             if dif > difMax:
                 difMax = dif
 
-        VO = VF.copy()
-        ciclo += 1
-        if difMax < EPSILON or ciclo > LIMITE_CICLOS:
-            fin = True  # Variable que se comprueba al inicio del for para ver si debe seguir o no (tb puede hacerse break)
+            VO = VF.copy()
+            ciclo += 1
+            if difMax < EPSILON or ciclo > LIMITE_CICLOS:
+                fin = True  # Variable que se comprueba al inicio del for para ver si debe seguir o no (tb puede hacerse break)
 
     return VO
 
