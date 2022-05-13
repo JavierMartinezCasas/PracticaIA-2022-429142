@@ -103,7 +103,7 @@ def obtenerValoresEsperados(costes, probabilidad):
     VF = [0 for eo in range(NUM_ESTADOS)]  # Lista de valores siguientes (ed)
     sumatorio = 0
     minVal = 10000
-    difMax = 1000
+    difMax = -1000
     ciclo = 0
     fin = False
 
@@ -112,6 +112,8 @@ def obtenerValoresEsperados(costes, probabilidad):
             break
 
         for eo in range(NUM_ESTADOS):
+            minVal=100000
+            difMax=-10000
             for ac in range(NUM_ACCIONES):  # Recorremos bucles para la matriz de probabilidad
                 sumatorio = 0
                 if eo == 0:  # Eliminamos el estado absorbente de los cálculos (None?)
@@ -123,19 +125,20 @@ def obtenerValoresEsperados(costes, probabilidad):
                         sumatorio += p * v  # Suma las probabilidades por los valores
                     valorAccion = costes[ac] + sumatorio  # Suma el coste de cada acción a sumatorio
 
-            if valorAccion < minVal:
-                print("Hola")
-                minVal = valorAccion
-                VF[eo] = minVal
+                if valorAccion < minVal:
+                    print("Hola")
+                    minVal = valorAccion
+                    VF[eo] = minVal
 
             dif = abs(VF[eo] - VO[eo])
             if dif > difMax:
+                print("Holo")
                 difMax = dif
 
-            VO = VF.copy()
-            ciclo += 1
-            if difMax < EPSILON or ciclo > LIMITE_CICLOS:
-                fin = True  # Variable que se comprueba al inicio del for para ver si debe seguir o no (tb puede hacerse break)
+        VO = VF.copy()
+        ciclo += 1
+        if difMax < EPSILON or ciclo > LIMITE_CICLOS:
+            fin = True  # Variable que se comprueba al inicio del for para ver si debe seguir o no (tb puede hacerse break)
 
     return VO
 
