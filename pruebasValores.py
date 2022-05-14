@@ -97,23 +97,25 @@ def calcularCostes():
     return costes
 
 
-# ---------------------Cálculo de las iteraciones sobre las ecuaciones de Bellman-------------------
+# ----------------Cálculo de las iteraciones sobre las ecuaciones de Bellman y la Política Óptima-----------------
 def obtenerValoresEsperados(costes, probabilidad):
     VO = [0 for eo in range(NUM_ESTADOS)]  # Lista de valores iniciales (eo)
     VF = [0 for eo in range(NUM_ESTADOS)]  # Lista de valores siguientes (ed)
-    sumatorio = 0
-    minVal = 10000
-    difMax = -1000
-    ciclo = 0
-    fin = False
+    PL = [0 for eo in range(NUM_ESTADOS)]  # Lista para guardar la política óptima
+    PL[0] = None    # Valor None para la política óptima del estado meta el estado meta
+    sumatorio = 0   # Sumatorio de las probabilidades * valores para cada acción
+    minVal = 10000  # Valor mínimo para comparar entre acciones
+    difMax = -1000  # Diferencia máxima para convergencia
+    ciclo = 0   # Contador del nº de iteración
+    fin = False  # Comprueba si el programa debe terminar o no
 
     while ciclo < LIMITE_CICLOS:  # Iteramos sobre las ecuaciones un número determinado de veces
         if fin:  # Si se cumple la condición de parada sale del bucle y termina el programa
             break
 
         for eo in range(NUM_ESTADOS):
-            minVal=100000
-            difMax=-10000
+            minVal = 100000
+            difMax = -10000
             for ac in range(NUM_ACCIONES):  # Recorremos bucles para la matriz de probabilidad
                 sumatorio = 0
                 if eo == 0:  # Eliminamos el estado absorbente de los cálculos (None?)
@@ -121,18 +123,17 @@ def obtenerValoresEsperados(costes, probabilidad):
                 else:
                     for ed in range(NUM_ESTADOS):
                         p = probabilidad[ac][eo][ed]
-                        v = VO[ed]  #PROBLEMA
+                        v = VO[ed]
                         sumatorio += p * v  # Suma las probabilidades por los valores
                     valorAccion = costes[ac] + sumatorio  # Suma el coste de cada acción a sumatorio
 
                 if valorAccion < minVal:
-                    print("Hola")
+                    PL[eo] = ac    # Asignación de la acción óptima para el estado
                     minVal = valorAccion
                     VF[eo] = minVal
 
             dif = abs(VF[eo] - VO[eo])
             if dif > difMax:
-                print("Holo")
                 difMax = dif
 
         VO = VF.copy()
@@ -140,10 +141,14 @@ def obtenerValoresEsperados(costes, probabilidad):
         if difMax < EPSILON or ciclo > LIMITE_CICLOS:
             fin = True  # Variable que se comprueba al inicio del for para ver si debe seguir o no (tb puede hacerse break)
 
+    print()
+    print("La lista de valores esperados es: ", VO)
+    print()
+    print("La lista de politica optima es: ", PL)
     return VO
 
 
 probabilidad = obtenerProbabilidades()
 costes = calcularCostes()
 
-print(obtenerValoresEsperados(costes, probabilidad))
+obtenerValoresEsperados(costes, probabilidad)
