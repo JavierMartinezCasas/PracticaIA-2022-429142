@@ -3,7 +3,7 @@ import pandas as pd     # Utilizado para leer el fichero .csv
 # ----------------------Definición de constantes---------------------------------
 NUM_ESTADOS = 8
 NUM_ACCIONES = 3
-COSTE = 1   # Coste seleccionado para las acciones
+COSTE = 1  # Coste seleccionado para las acciones
 ESTADO_OBJETIVO = 0     # Estado absorbente
 LIMITE_CICLOS = 5000   # Límite de iteraciones permitidas
 EPSILON = 0.001  # Umbral para la diferencia entre los valores esperados en ciclos consecutivos
@@ -115,18 +115,18 @@ def obtenerValoresEsperados(costes, probabilidad):
     PL = [0 for eo in range(NUM_ESTADOS)]  # Lista para guardar la política óptima
     PL[0] = None  # Valor None para la política óptima del estado meta el estado meta
     sumatorio = 0  # Sumatorio de las probabilidades * valores para cada acción
-    minVal = 10000  # Valor mínimo para comparar entre acciones
-    difMax = -1000  # Diferencia máxima para convergencia
+    minVal = 1000000  # Valor mínimo para comparar entre acciones
+    difMax = 1000000  # Diferencia máxima para convergencia
     ciclo = 0  # Contador del nº de iteración
     fin = False  # Comprueba si el programa debe terminar o no
 
     while ciclo < LIMITE_CICLOS:  # Iteramos sobre las ecuaciones un número determinado de veces
         if fin:  # Si se cumple la condición de parada sale del bucle y termina el programa
             break
+            difMax = 100000
 
         for eo in range(NUM_ESTADOS):   # Recorremos el bucle para cada uno de los estados
             minVal = 100000
-            difMax = -10000
             for ac in range(NUM_ACCIONES):  # Recorremos bucles para cada acción
                 sumatorio = 0
                 if eo == ESTADO_OBJETIVO:  # Eliminamos el estado absorbente de los cálculos
