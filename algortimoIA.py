@@ -155,7 +155,9 @@ def obtenerValoresEsperados(costes, probabilidad):
     # --------------------------Impresión de los resultados por pantalla---------------------------
     print()
     print("¡Éxito!")
-    print("Los valores convergen tras: ", ciclo, "iteraciones\n")
+    print("Los valores convergen tras: ", ciclo, "iteraciones")
+    print("Coste seleccionado: ", costes[0])
+    print()
     print("-------------------------------------RESULTADOS-------------------------------------")
     print("La lista de valores esperados es: ", VO)
     print()
